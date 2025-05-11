@@ -8,6 +8,12 @@
     top: 0;
     z-index: 999;
 }
+.nav-btn.active {
+  background-color: #4CAF50;
+  color: white !important;
+  border-radius: 6px;
+  font-weight: bold;
+}
 
 .logo {
     height: 70px;

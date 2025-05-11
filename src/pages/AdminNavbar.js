@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import './Navbar.css';
-import { FaChartPie, FaCog, FaSignOutAlt, FaBars, FaClipboardList } from 'react-icons/fa';
+import {
+  FaChartPie, FaSignOutAlt, FaBars,
+  FaClipboardList, FaFilePdf, FaPlusSquare
+} from 'react-icons/fa';
 import { useLocation, Link } from 'react-router-dom';
 
 function AdminNavbar({ onLogoutClick }) {
@@ -9,15 +12,30 @@ function AdminNavbar({ onLogoutClick }) {
 
   const isActive = (path) => location.pathname === path;
 
+  const navItems = [
+    { path: '/overview', label: 'Overview', icon: <FaChartPie /> },
+    { path: '/orders', label: 'Orders', icon: <FaClipboardList /> },
+    { path: '/add-product', label: 'Add Product', icon: <FaPlusSquare /> },
+    { path: '/add-catalog', label: 'Add Catalog', icon: <FaFilePdf /> }
+  ];
+
   return (
     <>
       <nav className="navbar">
         <img src="/Images/logo.png" alt="logo" className="logo" />
         <div className="nav-links">
-          <Link to="/overview" className={`nav-btn ${isActive('/overview') ? 'active' : ''}`}><FaChartPie /> Overview</Link>
-          <Link to="/orders" className={`nav-btn ${isActive('/orders') ? 'active' : ''}`}><FaClipboardList /> Orders</Link>
-          <Link to="/settings" className={`nav-btn ${isActive('/settings') ? 'active' : ''}`}><FaCog /> Settings</Link>
-          <a onClick={onLogoutClick} className="nav-btn"><FaSignOutAlt /> Logout</a>
+          {navItems.map(item => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`nav-btn ${isActive(item.path) ? 'active' : ''}`}
+            >
+              {item.icon} {item.label}
+            </Link>
+          ))}
+          <span onClick={onLogoutClick} className="nav-btn logout-btn">
+            <FaSignOutAlt /> Logout
+          </span>
         </div>
         <div className="hamburger" onClick={() => setShowMobileMenu(!showMobileMenu)}>
           <FaBars />
@@ -26,10 +44,19 @@ function AdminNavbar({ onLogoutClick }) {
 
       {showMobileMenu && (
         <div className="mobile-menu">
-          <Link to="/overview" className={`nav-btn ${isActive('/overview') ? 'active' : ''}`}><FaChartPie /> Overview</Link>
-          <Link to="/orders" className={`nav-btn ${isActive('/orders') ? 'active' : ''}`}><FaClipboardList /> Orders</Link>
-          <Link to="/settings" className={`nav-btn ${isActive('/settings') ? 'active' : ''}`}><FaCog /> Settings</Link>
-          <a onClick={onLogoutClick} className="nav-btn"><FaSignOutAlt /> Logout</a>
+          {navItems.map(item => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`nav-btn ${isActive(item.path) ? 'active' : ''}`}
+              onClick={() => setShowMobileMenu(false)}
+            >
+              {item.icon} {item.label}
+            </Link>
+          ))}
+          <span onClick={onLogoutClick} className="nav-btn logout-btn">
+            <FaSignOutAlt /> Logout
+          </span>
         </div>
       )}
     </>
