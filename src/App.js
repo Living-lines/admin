@@ -13,12 +13,14 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Admin />} />
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/PieChart" element={<PieChart />} />
-        <Route path="/DataDemonstration" element={<DataDemonstration />} />
+        {/*<Route path="/" element={<Admin />} /> */}
+        <Route path="/" element={<MainPage />} />
+        {/*<Route path="/PieChart" element={<PieChart />} />  */}
+        {/*<Route path="/DataDemonstration" element={<DataDemonstration />} /> */}
         <Route path="/Orders" element={<Orders />} />
-        <Route path="/overview" element={<Overview />} />
+        {/*<Route path="/overview" element={<Overview />} /> */}
+
+
         <Route path="/add-catalog" element={<AddCatalog />} />
 
         <Route path="/add-product" element={<AddProduct />} />

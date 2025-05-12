@@ -13,7 +13,7 @@ function AdminNavbar({ onLogoutClick }) {
   const isActive = (path) => location.pathname === path;
 
   const navItems = [
-    { path: '/overview', label: 'Overview', icon: <FaChartPie /> },
+    //{ path: '/overview', label: 'Overview', icon: <FaChartPie /> },
     { path: '/orders', label: 'Orders', icon: <FaClipboardList /> },
     { path: '/add-product', label: 'Add Product', icon: <FaPlusSquare /> },
     { path: '/add-catalog', label: 'Add Catalog', icon: <FaFilePdf /> }
@@ -33,9 +33,9 @@ function AdminNavbar({ onLogoutClick }) {
               {item.icon} {item.label}
             </Link>
           ))}
-          <span onClick={onLogoutClick} className="nav-btn logout-btn">
+          {/*<span onClick={onLogoutClick} className="nav-btn logout-btn">
             <FaSignOutAlt /> Logout
-          </span>
+          </span> */}
         </div>
         <div className="hamburger" onClick={() => setShowMobileMenu(!showMobileMenu)}>
           <FaBars />
@@ -53,10 +53,10 @@ function AdminNavbar({ onLogoutClick }) {
             >
               {item.icon} {item.label}
             </Link>
-          ))}
+          ))}{/*
           <span onClick={onLogoutClick} className="nav-btn logout-btn">
             <FaSignOutAlt /> Logout
-          </span>
+          </span> */}
         </div>
       )}
     </>

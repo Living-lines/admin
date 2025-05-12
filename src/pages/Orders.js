@@ -31,7 +31,9 @@ function Orders() {
           email: q.email,
           product: q.product_name,
           model: q.product_brand,
+          product_type: q.product_type,
           image: q.image_url,
+
         })).reverse(); // ⬅️ Newest quotes appear first
 
         setData(formatted);
@@ -64,9 +66,10 @@ function Orders() {
                 <th>Customer Name</th>
                 <th>Phone Number</th>
                 <th>Email</th>
-                <th>Product Name</th>
-                <th>Product Model</th>
-                <th>Image</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Product Type</th>
+                {/*<th>Image</th> */}
               </tr>
             </thead>
             <tbody>
@@ -77,15 +80,16 @@ function Orders() {
                     <td>{row.name}</td>
                     <td>{row.phone}</td>
                     <td>{row.email}</td>
-                    <td>{row.product}</td>
                     <td>{row.model}</td>
-                    <td>
+                    <td>{row.product}</td>
+                    <td>{row.product_type}</td>
+                    {/*<td>
                       <img
                         src={row.image}
                         alt={row.product}
                         style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '6px' }}
                       />
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               ) : (
