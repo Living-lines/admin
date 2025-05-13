@@ -48,7 +48,7 @@ const AddProduct = () => {
       form.append('product_type', product_type);
       form.append('image', file);
 
-      const res = await fetch('http://localhost:3000/api/products', {
+      const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products', {
         method: 'POST',
         body: form
       });
