@@ -72,27 +72,28 @@ const AddProduct = () => {
   return (
     <div>
       <AdminNavbar />
-    <div className="add-product-page">
-      
-      <div className="add-product-container">
-        <h2 className="add-product-title">Add New Product</h2>
-        {success && <div className="add-product-success-msg">{success}</div>}
-        {error && <div className="add-product-error-msg">{error}</div>}
+      <div className="add-product-page">
 
-        <form className="add-product-form" onSubmit={handleSubmit}>
-          <input type="text" name="brand" placeholder="Brand" value={formData.brand} onChange={handleChange} required />
-          <input type="text" name="model_name" placeholder="Model Name" value={formData.model_name} onChange={handleChange} required />
-          <input type="text" name="product_type" placeholder="Product Type" value={formData.product_type} onChange={handleChange} required />
+        <div className="add-product-container">
+          <h2 className="add-product-title">Add New Product</h2>
+          {success && <div className="add-product-success-msg">{success}</div>}
+          {error && <div className="add-product-error-msg">{error}</div>}
 
-          <div className="add-product-upload-box" onDrop={handleDrop} onDragOver={(e) => e.preventDefault()} onClick={() => fileInputRef.current.click()}>
-            {file ? file.name : 'Drag & drop image or click to upload'}
-            <input ref={fileInputRef} type="file" style={{ display: 'none' }} accept="image/*" onChange={handleFileSelect} />
-          </div>
+          <form className="add-product-form" onSubmit={handleSubmit}>
+            <input type="text" name="brand" placeholder="Brand" value={formData.brand} onChange={handleChange} required />
+            <input type="text" name="model_name" placeholder="Model Name" value={formData.model_name} onChange={handleChange} required />
+            <input type="text" name="product_type" placeholder="Product Type" value={formData.product_type} onChange={handleChange} required />
 
-          <button type="submit" className="add-product-submit-btn">Add Product</button>
-        </form>
-      </div>
-    </div></div>
+            <div className="add-product-upload-box" onDrop={handleDrop} onDragOver={(e) => e.preventDefault()} onClick={() => fileInputRef.current.click()}>
+              {file ? file.name : 'Drag & drop image or click to upload'}
+              <input ref={fileInputRef} type="file" style={{ display: 'none' }} accept="image/*" onChange={handleFileSelect} name="image" />
+            </div>
+
+            <button type="submit" className="add-product-submit-btn">Add Product</button>
+          </form>
+
+        </div>
+      </div></div>
   );
 };
 
