@@ -5,6 +5,7 @@ import AdminNavbar from './AdminNavbar';
 function Orders() {
   const [data, setData] = useState([]);
   const [error, setError] = useState('');
+  const [popupImage, setPopupImage] = useState(null); // For modal popup
 
   useEffect(() => {
     const loadQuotes = async () => {
@@ -33,7 +34,6 @@ function Orders() {
           model: q.product_brand,
           product_type: q.product_type,
           image: q.image_url,
-
         })).reverse(); // ⬅️ Newest quotes appear first
 
         setData(formatted);
@@ -69,7 +69,7 @@ function Orders() {
                 <th>Brand</th>
                 <th>Model</th>
                 <th>Product Type</th>
-                {/*<th>Image</th> */}
+                <th>Image</th>
               </tr>
             </thead>
             <tbody>
@@ -83,24 +83,36 @@ function Orders() {
                     <td>{row.model}</td>
                     <td>{row.product}</td>
                     <td>{row.product_type}</td>
-                    {/*<td>
+                    <td>
                       <img
                         src={row.image}
                         alt={row.product}
-                        style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '6px' }}
+                        className="thumbnail"
+                        onClick={() => setPopupImage(row.image)}
                       />
-                    </td> */}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7">No valid orders found.</td>
+                  <td colSpan="8">No valid orders found.</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
       </div>
+
+
+
+      {popupImage && (
+        <div className="popup-overlay" onClick={() => setPopupImage(null)}>
+          <div className="popup-content" onClick={e => e.stopPropagation()}>
+            <span className="close-btn" onClick={() => setPopupImage(null)}>&times;</span>
+            <img src={popupImage} alt="Enlarged" className="popup-image" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
