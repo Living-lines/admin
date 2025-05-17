@@ -27,7 +27,7 @@ export default function AddCatalog() {
 
     try {
       setUploading(true);
-      const res = await fetch('http://localhost:3000/api/catalogs', {
+      const res = await fetch('https://backend-tawny-one-62.vercel.app/api/catalogs', {
         method: 'POST',
         body: formData,
       });

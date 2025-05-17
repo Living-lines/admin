@@ -10,7 +10,7 @@ function Orders() {
   useEffect(() => {
     const loadQuotes = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/quotes');
+        const res = await fetch('https://backend-tawny-one-62.vercel.app/api/quotes');
         if (!res.ok) {
           const err = await res.json();
           setError(`❌ Backend Error: ${err.error || 'Unknown error'}`);
