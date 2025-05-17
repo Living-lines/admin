@@ -1,27 +1,29 @@
 .add-product-page {
   font-family: 'Segoe UI', sans-serif;
   padding: 2rem;
-  background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+  background: #f4f7fa;
   min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
 }
 
 .add-product-container {
-  max-width: 600px;
   width: 100%;
+  max-width: 600px;
   padding: 30px;
   background: #ffffff;
   border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  margin-bottom: 40px;
 }
 
 .add-product-title {
   text-align: center;
   font-size: 28px;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 20px;
+  color: #1f2937;
 }
 
 .add-product-form {
@@ -70,9 +72,6 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .add-product-submit-btn:hover {
@@ -91,4 +90,191 @@
   font-weight: 600;
   text-align: center;
   margin-bottom: 1rem;
+}
+
+
+
+
+
+
+
+.quote-table-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
+  color: #111827;
+}
+
+.quote-table-container {
+  width: 100%;
+  max-width: 1100px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin-bottom: 40px;
+}
+
+.quote-table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.quote-table-container th,
+.quote-table-container td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  font-size: 15px;
+  color: #374151;
+}
+
+.quote-table-container th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #111827;
+}
+
+.quote-table-container tr:last-child td {
+  border-bottom: none;
+}
+
+.quote-table-thumbnail {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.quote-table-delete-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.quote-table-delete-btn:hover {
+  background-color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .quote-table-container table,
+  .quote-table-container thead,
+  .quote-table-container tbody,
+  .quote-table-container th,
+  .quote-table-container td,
+  .quote-table-container tr {
+    display: block;
+  }
+
+  .quote-table-container thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .quote-table-container tr {
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px;
+    background: #ffffff;
+  }
+
+  .quote-table-container td {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+  }
+
+  .quote-table-container td::before {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: 600;
+    color: #6b7280;
+  }
+
+  .quote-table-container td:nth-of-type(1)::before { content: "Serial No"; }
+  .quote-table-container td:nth-of-type(2)::before { content: "Customer Name"; }
+  .quote-table-container td:nth-of-type(3)::before { content: "Phone Number"; }
+  .quote-table-container td:nth-of-type(4)::before { content: "Email"; }
+  .quote-table-container td:nth-of-type(5)::before { content: "Brand"; }
+  .quote-table-container td:nth-of-type(6)::before { content: "Model"; }
+  .quote-table-container td:nth-of-type(7)::before { content: "Product Type"; }
+  .quote-table-container td:nth-of-type(8)::before { content: "Image"; }
+  .quote-table-container td:nth-of-type(9)::before { content: "Delete"; }
+}
+
+
+
+
+
+
+
+.product-table-title {
+  font-size: 24px;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}
+
+.product-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 40px;
+  background-color: black;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background-color: black;
+  color: white;
+}
+
+.product-table th,
+.product-table td {
+  border: 1px solid #666;
+  padding: 10px;
+  text-align: center;
+}
+
+.product-table th {
+  background-color: #222;
+  font-weight: bold;
+}
+
+.product-table-thumbnail {
+  width: 60px;
+  height: auto;
+  object-fit: contain;
+}
+
+.product-table-delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.product-table-delete-btn:hover {
+  background-color: #c0392b;
 }

@@ -15,7 +15,7 @@ function AdminNavbar({ onLogoutClick }) {
   const navItems = [
     //{ path: '/overview', label: 'Overview', icon: <FaChartPie /> },
     { path: '/', label: 'Orders', icon: <FaClipboardList /> },
-    { path: '/add-product', label: 'Add Product', icon: <FaPlusSquare /> },
+    { path: '/add-product', label: 'Products', icon: <FaPlusSquare /> },
     { path: '/add-catalog', label: 'Add Catalog', icon: <FaFilePdf /> }
   ];
 
