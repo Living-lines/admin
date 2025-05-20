@@ -5,10 +5,12 @@ import AdminNavbar from './AdminNavbar';
 export default function AddCatalog() {
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);
+  const [image, setImage] = useState(null);           // new
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef();
+  const imageInputRef = useRef();                     // new
   const uploadBoxRef = useRef();
 
   const handleSubmit = async (e) => {
@@ -24,6 +26,7 @@ export default function AddCatalog() {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('file', file);
+    if (image) formData.append('image', image);        // new
 
     try {
       setUploading(true);
@@ -34,7 +37,7 @@ export default function AddCatalog() {
 
       const contentType = res.headers.get('content-type');
       if (!res.ok) {
-        if (contentType && contentType.includes('application/json')) {
+        if (contentType?.includes('application/json')) {
           const err = await res.json();
           setError(err.error || '❌ Failed to upload catalog');
         } else {
@@ -47,7 +50,9 @@ export default function AddCatalog() {
       setSuccess('✅ Catalog uploaded successfully!');
       setTitle('');
       setFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = '';
+      setImage(null);                                 // new
+      fileInputRef.current.value = '';
+      imageInputRef.current.value = '';               // new
     } catch (err) {
       console.error(err);
       setError('❌ Network error: ' + err.message);
@@ -56,6 +61,7 @@ export default function AddCatalog() {
     }
   };
 
+  // existing PDF drag/drop handlers…
   const handleDrop = (e) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files[0];
@@ -67,15 +73,8 @@ export default function AddCatalog() {
     setError('');
     uploadBoxRef.current.classList.remove('dragover');
   };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    uploadBoxRef.current.classList.add('dragover');
-  };
-
-  const handleDragLeave = () => {
-    uploadBoxRef.current.classList.remove('dragover');
-  };
+  const handleDragOver = (e) => { e.preventDefault(); uploadBoxRef.current.classList.add('dragover'); };
+  const handleDragLeave = () => uploadBoxRef.current.classList.remove('dragover');
 
   return (
     <div>
@@ -85,7 +84,7 @@ export default function AddCatalog() {
           <h2 className="add-catalog-title">Upload New Catalog PDF</h2>
 
           {success && <div className="success-msg">{success}</div>}
-          {error && <div className="error-msg">{error}</div>}
+          {error   && <div className="error-msg">{error}</div>}
 
           <form onSubmit={handleSubmit} className="add-catalog-form">
             <input
@@ -96,6 +95,7 @@ export default function AddCatalog() {
               required
             />
 
+            {/* PDF upload box */}
             <div
               className="upload-box"
               ref={uploadBoxRef}
@@ -112,11 +112,34 @@ export default function AddCatalog() {
                 ref={fileInputRef}
                 onChange={(e) => {
                   const selected = e.target.files[0];
-                  if (selected && selected.type !== 'application/pdf') {
+                  if (selected?.type !== 'application/pdf') {
                     setError('❌ Only PDF files are allowed');
                     return;
                   }
                   setFile(selected);
+                  setError('');
+                }}
+              />
+            </div>
+
+            {/* NEW: Image upload box */}
+            <div
+              className="upload-box"
+              onClick={() => imageInputRef.current.click()}
+            >
+              {image ? image.name : 'Click to upload a cover image (optional)'}
+              <input
+                type="file"
+                accept="image/png, image/jpeg"
+                style={{ display: 'none' }}
+                ref={imageInputRef}
+                onChange={(e) => {
+                  const img = e.target.files[0];
+                  if (img && !['image/png','image/jpeg'].includes(img.type)) {
+                    setError('❌ Only JPEG/PNG images are allowed');
+                    return;
+                  }
+                  setImage(img);
                   setError('');
                 }}
               />
