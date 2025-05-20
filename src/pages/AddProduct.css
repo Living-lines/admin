@@ -221,14 +221,44 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .product-table-title {
-  font-size: 24px;
-  margin-top: 30px;
-  margin-bottom: 15px;
+  align-content: center;
+  align-items: center;
+  margin-left: 250px;
+  font-size: 26px;
+  font-weight: 800;
   text-align: center;
-  font-weight: bold;
-  color: white;
+  color: #ffffff;
+  background: linear-gradient(to right, #f38d19, #e66910);
+  padding: 15px 25px;
+  /*margin: 40px auto 20px; */
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 114, 255, 0.3);
+  width: fit-content;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+.product-table-title:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(0, 114, 255, 0.5);
+}
+
 
 .product-table-container {
   width: 100%;
@@ -277,4 +307,89 @@
 
 .product-table-delete-btn:hover {
   background-color: #c0392b;
+}
+
+
+.product-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  padding: 0 10px;
+  gap: 130px;
+}
+.product-search-input {
+  padding: 10px 15px;
+  border-radius: 25px;
+  border: 2px solid;
+  border-image-slice: 1;
+  border-width: 2px;
+  border-image-source: linear-gradient(to right, #00c6ff, #0072ff);
+  background-color: #111;
+  color: white;
+  font-size: 15px;
+  width: 280px;
+  transition: all 0.3s ease;
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 198, 255, 0.2);
+}
+
+.product-search-input::placeholder {
+  color: #ccc;
+  font-style: italic;
+}
+
+.product-search-input:focus {
+  border-image-source: linear-gradient(to right, #f7971e, #ffd200);
+  box-shadow: 0 0 15px rgba(255, 210, 0, 0.5);
+  background-color: #1a1a1a;
+}
+
+
+#poda {
+  margin-right: -250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#main {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.input1 {
+  background-color: #010201;
+  border: 2px solid #f26624;
+  width: 340px;
+  height: 55px;
+  border-radius: 12px;
+  color: white;
+  padding-inline: 20px;
+  font-size: 18px;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input1::placeholder {
+  color: #c0b9c0;
+  font-size: 16px;
+}
+
+.input1:focus {
+  box-shadow: 0 0 10px 2px #ff2000;
+  outline: none;
+}
+
+.filterBorder {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, #ff6600, #ffcc00, #ff6600);
+  margin-top: 8px;
+  border-radius: 2px;
 }
