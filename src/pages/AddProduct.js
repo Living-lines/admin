@@ -362,7 +362,7 @@ const AddProduct = () => {
       form.append('product_type', product_type);
       form.append('image', file);
 
-      const res = await fetch('http://localhost:3000/api/products', {
+      const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products', {
         method: 'POST',
         body: form
       });
@@ -386,7 +386,7 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchQuotes = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/quotes');
+        const res = await fetch('https://backend-tawny-one-62.vercel.app/api/quotes');
         if (!res.ok) {
           const err = await res.json();
           setQuotesError('❌ Failed to fetch quote requests: ' + (err.error || 'Unknown error'));
@@ -425,7 +425,7 @@ const AddProduct = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this quote request?');
     if (!confirmDelete) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/quotes/${quoteId}`, { method: 'DELETE' });
+      const res = await fetch(`https://backend-tawny-one-62.vercel.app/api/quotes/${quoteId}`, { method: 'DELETE' });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         setQuotesError('❌ Failed to delete quote: ' + (err.error || 'Unknown error'));
@@ -444,7 +444,7 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/products');
+        const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products');
         if (!res.ok) throw new Error('Failed to fetch products');
         const productsData = await res.json();
         const filtered = productsData.filter(p => p.brand && p.model_name && p.product_type && p.image_url);
@@ -462,7 +462,7 @@ const AddProduct = () => {
   const handleDeleteProduct = async (productId) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/products/${productId}`, {
+      const res = await fetch(`https://backend-tawny-one-62.vercel.app/api/products/${productId}`, {
         method: 'DELETE',
       });
       if (res.ok) {
