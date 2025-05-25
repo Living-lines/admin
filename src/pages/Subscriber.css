@@ -1,0 +1,84 @@
+.orders-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #e8eaf6, #f3e5f5);
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.orders-table-container {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+  margin-top: 3rem;
+}
+
+.table-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #4a148c;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px 1px #ccc;
+}
+
+.glass-table {
+  overflow-x: auto;
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+thead {
+  background-color: #7e57c2;
+  color: white;
+  font-size: 1rem;
+}
+
+thead th {
+  padding: 14px;
+  text-align: left;
+}
+
+tbody tr {
+  transition: background 0.3s ease;
+}
+
+tbody tr:hover {
+  background-color: #ede7f6;
+  cursor: pointer;
+}
+
+tbody td {
+  padding: 14px;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .orders-table-container {
+    padding: 1rem;
+  }
+
+  .table-title {
+    font-size: 1.5rem;
+  }
+
+  thead {
+    font-size: 0.9rem;
+  }
+
+  tbody td {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}
