@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Navbar.css';
 import {
   FaChartPie, FaSignOutAlt, FaBars,
-  FaClipboardList, FaFilePdf, FaPlusSquare
+  FaClipboardList, FaFilePdf, FaPlusSquare, FaUsers
 } from 'react-icons/fa';
 import { useLocation, Link } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ function AdminNavbar({ onLogoutClick }) {
     { path: '/', label: 'Orders', icon: <FaClipboardList /> },
     { path: '/add-product', label: 'Products', icon: <FaPlusSquare /> },
     { path: '/add-catalog', label: 'Add Catalog', icon: <FaFilePdf /> },
-    { path: '/subscribers', label: 'Subscribers', icon: <FaChartPie /> }
+    { path: '/subscribers', label: 'Subscribers', icon: <FaUsers /> }
   ];
 
   return (

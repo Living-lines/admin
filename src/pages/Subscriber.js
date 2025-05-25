@@ -6,7 +6,7 @@ function Subscriber() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('http://backend-tawny-one-62.vercel.app/api/subscribers')
+    fetch('https://backend-tawny-one-62.vercel.app/api/subscribers')
       .then((res) => res.json())
       .then((records) => {
         const formatted = records.map((s, i) => ({
