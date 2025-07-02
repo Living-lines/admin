@@ -238,15 +238,16 @@
 
 
 .product-table-title {
+  width: 100px;
   align-content: center;
   align-items: center;
-  margin-left: 250px;
+  margin-left: 0px;
   font-size: 26px;
   font-weight: 800;
   text-align: center;
   color: #ffffff;
   background: linear-gradient(to right, #f38d19, #e66910);
-  padding: 15px 25px;
+  padding: 15px 95px;
   /*margin: 40px auto 20px; */
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 114, 255, 0.3);
@@ -317,7 +318,6 @@
   margin-top: 30px;
   margin-bottom: 15px;
   padding: 0 10px;
-  gap: 130px;
 }
 .product-search-input {
   padding: 10px 15px;
@@ -348,10 +348,10 @@
 
 
 #poda {
-  margin-right: -250px;
+  width: 100px;
+  margin-right: 0px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: right;
 }
 
 #main {
@@ -392,4 +392,40 @@
   background: linear-gradient(to right, #ff6600, #ffcc00, #ff6600);
   margin-top: 8px;
   border-radius: 2px;
+}
+
+
+
+
+.product-mode-selection {
+  margin: 1rem 0;
+  font-weight: bold;
+}
+.product-mode-selection label {
+  margin-right: 1rem;
+}
+
+
+.add-product-form select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 1rem;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D'12'%20height%3D'8'%20viewBox%3D'0%200%2012%208'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M1.41%200L6%204.58%2010.59%200%2012%201.41l-6%206-6-6z'%20fill%3D'%23666'%20/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  transition: border-color 0.3s;
+}
+
+.add-product-form select:focus {
+  border-color: #888;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
