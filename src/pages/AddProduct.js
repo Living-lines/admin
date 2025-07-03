@@ -365,7 +365,8 @@ const AddProduct = () => {
   const [formData, setFormData] = useState({
     brand: '',
     model_name: '',
-    product_type: ''
+    product_type: '',
+    description: ''
   });
   const [file, setFile] = useState(null);
   const [success, setSuccess] = useState('');
@@ -396,7 +397,7 @@ const AddProduct = () => {
     e.preventDefault();
     setSuccess('');
     setError('');
-    const { brand, model_name, product_type } = formData;
+    const { brand, model_name, product_type, description } = formData;
     if (!brand || !model_name || !product_type || !file) {
       setError('❌ brand, model_name, product_type and image are all required');
       return;
@@ -405,7 +406,12 @@ const AddProduct = () => {
       const form = new FormData();
       form.append('brand', brand);
       form.append('model_name', model_name);
-      form.append('product_type', product_type);
+      /*form.append('product_type', product_type); */
+      form.append('product_type', productMode === 'tiles' ? 'Tiles' : product_type); // Always send 'Tiles' if in tiles mode
+      form.append('description', description);
+      if (productMode === 'tiles') {
+        form.append('tilestype', product_type);
+      }
       form.append('image', file);
       const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products', {
         method: 'POST',
@@ -606,6 +612,7 @@ const AddProduct = () => {
                 onChange={handleChange}
                 required
               />
+
             )}
 
 
