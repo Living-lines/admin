@@ -359,7 +359,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import './AddProduct.css';
 import AdminNavbar from './AdminNavbar';
 
-
 const AddProduct = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
@@ -376,6 +375,7 @@ const AddProduct = () => {
   const [products, setProducts] = useState([]);
   const fileInputRef = useRef();
   const [productMode, setProductMode] = useState('other');
+  const [tileTypes, setTileTypes] = useState([]);
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -383,6 +383,16 @@ const AddProduct = () => {
       [e.target.name]: e.target.value
     }));
   };
+
+  useEffect(() => {
+    fetch('https://backend-tawny-one-62.vercel.app/api/tilestype')
+      .then(res => res.json())
+      .then(data => {
+        const tiles = Array.isArray(data) ? data : (data.records ? data.records.map(item => item.name) : []);
+        setTileTypes(tiles);
+      })
+      .catch(err => console.error('❌ Tile types fetch error:', err));
+  }, []);
 
   const handleFileSelect = (e) => {
     setFile(e.target.files[0]);
@@ -406,24 +416,23 @@ const AddProduct = () => {
       const form = new FormData();
       form.append('brand', brand);
       form.append('model_name', model_name);
-      /*form.append('product_type', product_type); */
-      form.append('product_type', productMode === 'tiles' ? 'Tiles' : product_type); // Always send 'Tiles' if in tiles mode
+      form.append('product_type', product_type);
       form.append('description', description);
-      if (productMode === 'tiles') {
-        form.append('tilestype', product_type);
-      }
-      form.append('image', file);
+      form.append('images', file);
+
       const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products', {
         method: 'POST',
         body: form
       });
+
       if (!res.ok) {
         const err = await res.json();
         setError(err.error || '❌ Failed to add product');
         return;
       }
+
       setSuccess('✅ Product added successfully!');
-      setFormData({ brand: '', model_name: '', product_type: '' });
+      setFormData({ brand: '', model_name: '', product_type: '', description: '' });
       setFile(null);
       window.dispatchEvent(new Event("product-added"));
     } catch (err) {
@@ -538,11 +547,6 @@ const AddProduct = () => {
           {success && <div className="add-product-success-msg">{success}</div>}
           {error && <div className="add-product-error-msg">{error}</div>}
 
-
-
-
-
-
           <div className="product-mode-selection">
             <label>
               <input
@@ -552,7 +556,7 @@ const AddProduct = () => {
                 checked={productMode === 'tiles'}
                 onChange={() => {
                   setProductMode('tiles');
-                  setFormData(prev => ({ ...prev, product_type: 'Interior Tiles' })); // default dropdown value
+                  setFormData(prev => ({ ...prev, product_type: 'Interior Tiles' }));
                 }}
               />
               Tiles
@@ -572,36 +576,34 @@ const AddProduct = () => {
             </label>
           </div>
 
-
-
-
-
-
-
-
           <form className="add-product-form" onSubmit={handleSubmit}>
-            <input type="text" name="brand" placeholder="Brand" value={formData.brand} onChange={handleChange} required />
-            <input type="text" name="model_name" placeholder="Model Name" value={formData.model_name} onChange={handleChange} required />
-            {/*<input type="text" name="product_type" placeholder="Product Type" value={formData.product_type} onChange={handleChange} required />  */}
-
-
-
-
+            <input
+              type="text"
+              name="brand"
+              placeholder="Brand"
+              value={formData.brand}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="model_name"
+              placeholder="Model Name"
+              value={formData.model_name}
+              onChange={handleChange}
+              required
+            />
             {productMode === 'tiles' ? (
               <select
                 name="product_type"
                 value={formData.product_type}
                 onChange={handleChange}
                 required
-              >  <option value="Interior Tiles">Select Tile Type</option>
-                <option value="Interior Tiles">Interior Tiles</option>
-                <option value="Exterior Tiles">Exterior Tiles</option>
-                <option value="Bathroom Tiles">Bathroom Tiles</option>
-                <option value="Kitchen Tiles">Kitchen Tiles</option>
-                <option value="Outdoor Tiles">Outdoor Tiles</option>
-                <option value="Side Wall Tiles">Side Wall Tiles</option>
-                <option value="Road Side Tiles">Road Side Tiles</option>
-                <option value="Layout Tiles">Layout Tiles</option>
+              >
+                <option value="">Select Tile Category</option>
+                {tileTypes.map(tile => (
+                  <option key={tile} value={tile}>{tile}</option>
+                ))}
               </select>
             ) : (
               <input
@@ -612,17 +614,29 @@ const AddProduct = () => {
                 onChange={handleChange}
                 required
               />
-
             )}
-
-
-
-
-
-
-            <div className="add-product-upload-box" onDrop={handleDrop} onDragOver={(e) => e.preventDefault()} onClick={() => fileInputRef.current.click()}>
+            <textarea
+              name="description"
+              placeholder="Description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={3}
+            />
+            <div
+              className="add-product-upload-box"
+              onDrop={handleDrop}
+              onDragOver={(e) => e.preventDefault()}
+              onClick={() => fileInputRef.current.click()}
+            >
               {file ? file.name : 'Drag & drop image or click to upload'}
-              <input ref={fileInputRef} type="file" style={{ display: 'none' }} accept="image/*" onChange={handleFileSelect} name="image" />
+              <input
+                ref={fileInputRef}
+                type="file"
+                style={{ display: 'none' }}
+                accept="image/*"
+                onChange={handleFileSelect}
+                name="image"
+              />
             </div>
             <button type="submit" className="add-product-submit-btn">Add Product</button>
           </form>
@@ -644,7 +658,6 @@ const AddProduct = () => {
               <div className="filterBorder"></div>
             </div>
           </div>
-
         </div>
 
         <div className="product-table-container">
