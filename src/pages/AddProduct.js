@@ -365,7 +365,8 @@ const AddProduct = () => {
     brand: '',
     model_name: '',
     product_type: '',
-    description: ''
+    description: '',
+    tilestype: ''
   });
   const [file, setFile] = useState(null);
   const [success, setSuccess] = useState('');
@@ -419,6 +420,9 @@ const AddProduct = () => {
       form.append('product_type', product_type);
       form.append('description', description);
       form.append('images', file);
+      if (product_type === 'Tiles') {
+  form.append('tilestype', formData.tilestype);     
+}
 
       const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products', {
         method: 'POST',
@@ -432,7 +436,7 @@ const AddProduct = () => {
       }
 
       setSuccess('✅ Product added successfully!');
-      setFormData({ brand: '', model_name: '', product_type: '', description: '' });
+      setFormData({ brand: '', model_name: '', product_type: '', description: '', tilestype: '' });
       setFile(null);
       window.dispatchEvent(new Event("product-added"));
     } catch (err) {
@@ -556,7 +560,7 @@ const AddProduct = () => {
                 checked={productMode === 'tiles'}
                 onChange={() => {
                   setProductMode('tiles');
-                  setFormData(prev => ({ ...prev, product_type: 'Interior Tiles' }));
+                  setFormData(prev => ({ ...prev, product_type: 'Tiles', tilestype: '' }));
                 }}
               />
               Tiles
@@ -569,7 +573,7 @@ const AddProduct = () => {
                 checked={productMode === 'other'}
                 onChange={() => {
                   setProductMode('other');
-                  setFormData(prev => ({ ...prev, product_type: '' }));
+                  setFormData(prev => ({ ...prev, product_type: '', tilestype: '' }));
                 }}
               />
               Other Products
@@ -595,8 +599,8 @@ const AddProduct = () => {
             />
             {productMode === 'tiles' ? (
               <select
-                name="product_type"
-                value={formData.product_type}
+                name="tilestype"
+                value={formData.tilestype}
                 onChange={handleChange}
                 required
               >
