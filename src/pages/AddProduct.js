@@ -368,7 +368,7 @@ const AddProduct = () => {
     description: '',
     tilestype: ''
   });
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [quotes, setQuotes] = useState([]);
@@ -396,30 +396,36 @@ const AddProduct = () => {
   }, []);
 
   const handleFileSelect = (e) => {
-    setFile(e.target.files[0]);
-  };
+  const picked = Array.from(e.target.files || []);
+  setFiles((prev) => [...prev, ...picked]);
+};
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setFile(e.dataTransfer.files[0]);
-  };
+
+ const handleDrop = (e) => {
+  e.preventDefault();
+  const dropped = Array.from(e.dataTransfer.files || []);
+  setFiles((prev) => [...prev, ...dropped]);
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSuccess('');
     setError('');
     const { brand, model_name, product_type, description } = formData;
-    if (!brand || !model_name || !product_type || !file) {
-      setError('❌ brand, model_name, product_type and image are all required');
-      return;
-    }
+    if (!brand || !model_name || !product_type || files.length === 0) {
+  setError('❌ brand, model_name, product_type and at least one image are required');
+  return;
+}
+
     try {
       const form = new FormData();
       form.append('brand', brand);
       form.append('model_name', model_name);
       form.append('product_type', product_type);
       form.append('description', description);
-      form.append('images', file);
+      files.forEach((f) => form.append('images', f));
+
       if (product_type === 'Tiles') {
   form.append('tilestype', formData.tilestype);     
 }
@@ -437,7 +443,7 @@ const AddProduct = () => {
 
       setSuccess('✅ Product added successfully!');
       setFormData({ brand: '', model_name: '', product_type: '', description: '', tilestype: '' });
-      setFile(null);
+      setFiles([]);
       window.dispatchEvent(new Event("product-added"));
     } catch (err) {
       console.error(err);
@@ -632,15 +638,31 @@ const AddProduct = () => {
               onDragOver={(e) => e.preventDefault()}
               onClick={() => fileInputRef.current.click()}
             >
-              {file ? file.name : 'Drag & drop image or click to upload'}
+             {files.length ? `${files.length} image(s) selected` : 'Drag & drop image(s) or click to upload'}
+
               <input
-                ref={fileInputRef}
-                type="file"
-                style={{ display: 'none' }}
-                accept="image/*"
-                onChange={handleFileSelect}
-                name="image"
-              />
+  ref={fileInputRef}
+  type="file"
+  style={{ display: 'none' }}
+  accept="image/*"
+  multiple
+  onChange={handleFileSelect}
+  name="images"
+/>
+{files.length > 0 && (
+  <div className="selected-files-list">
+    {files.map((f, i) => (
+      <div key={i} className="selected-file-item">
+        {f.name}
+        <button type="button" onClick={(e) => { e.stopPropagation(); setFiles(prev => prev.filter((_, idx) => idx !== i)); }}>
+          &times;
+        </button>
+      </div>
+    ))}
+  </div>
+)}
+
+
             </div>
             <button type="submit" className="add-product-submit-btn">Add Product</button>
           </form>
