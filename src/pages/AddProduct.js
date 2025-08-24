@@ -363,7 +363,6 @@ const AddProduct = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     brand: '',
-    model_name: '',
     product_type: '',
     description: '',
     tilestype: ''
@@ -412,16 +411,15 @@ const AddProduct = () => {
     e.preventDefault();
     setSuccess('');
     setError('');
-    const { brand, model_name, product_type, description } = formData;
-    if (!brand || !model_name || !product_type || files.length === 0) {
-  setError('❌ brand, model_name, product_type and at least one image are required');
+    const { brand, product_type, description } = formData;
+    if (!brand || !product_type || files.length === 0) {
+  setError('❌ brand, product_type and at least one image are required');
   return;
 }
 
     try {
       const form = new FormData();
       form.append('brand', brand);
-      form.append('model_name', model_name);
       form.append('product_type', product_type);
       form.append('description', description);
       files.forEach((f) => form.append('images', f));
@@ -493,8 +491,13 @@ const AddProduct = () => {
         const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products');
         if (!res.ok) throw new Error('Failed to fetch products');
         const productsData = await res.json();
-        const filtered = productsData.filter(p => p.brand && p.model_name && p.product_type && p.image_url);
-        setProducts(filtered);
+        const filtered = productsData.filter(p =>
+  p.brand &&
+  p.product_type &&
+  ((Array.isArray(p.images) && p.images.length > 0) || p.image_url)
+);
+setProducts(filtered);
+
       } catch (err) {
         console.error('Error loading products:', err);
       }
@@ -542,11 +545,15 @@ const AddProduct = () => {
     }
   };
 
-  const filteredProducts = products.filter(product =>
-    product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.model_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.product_type.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter((product) => {
+  const q = (searchTerm || '').toLowerCase();
+  if (!q) return true;
+  const brand = product.brand?.toLowerCase() || '';
+  const type  = product.product_type?.toLowerCase() || '';
+  const desc  = product.description?.toLowerCase() || '';
+  return brand.includes(q) || type.includes(q) || desc.includes(q);
+});
+
 
   return (
     <div>
@@ -592,14 +599,6 @@ const AddProduct = () => {
               name="brand"
               placeholder="Brand"
               value={formData.brand}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              name="model_name"
-              placeholder="Model Name"
-              value={formData.model_name}
               onChange={handleChange}
               required
             />
@@ -692,7 +691,6 @@ const AddProduct = () => {
               <tr>
                 <th>Image</th>
                 <th>Brand</th>
-                <th>Model Name</th>
                 <th>Product Type</th>
                 <th>Actions</th>
               </tr>
@@ -700,9 +698,17 @@ const AddProduct = () => {
             <tbody>
               {filteredProducts.map(product => (
                 <tr key={product.id}>
-                  <td><img src={product.image_url} alt={product.model_name} className="product-table-thumbnail" /></td>
+                  <img
+  src={
+    (Array.isArray(product.images) && product.images[0]) ||
+    product.image_url ||
+    ''
+  }
+  alt={product.brand || 'Product'}
+  className="product-table-thumbnail"
+/>
+
                   <td>{product.brand}</td>
-                  <td>{product.model_name}</td>
                   <td>{product.product_type}</td>
                   <td>
                     <button className="product-table-delete-btn" onClick={() => handleDeleteProduct(product.id)}>Delete</button>
@@ -711,7 +717,7 @@ const AddProduct = () => {
               ))}
               {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan="5">No products match your search.</td>
+                  <td colSpan="4">No products match your search.</td>
                 </tr>
               )}
             </tbody>
