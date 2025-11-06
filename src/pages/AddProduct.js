@@ -365,7 +365,8 @@ const AddProduct = () => {
     brand: '',
     product_type: '',
     description: '',
-    tilestype: ''
+    tilestype: '',
+    model_name: ''
   });
   const [files, setFiles] = useState([]);
   const [success, setSuccess] = useState('');
@@ -385,27 +386,25 @@ const AddProduct = () => {
   };
 
   useEffect(() => {
-    fetch('https://backend-tawny-one-62.vercel.app/api/tilestype')
+    fetch('https://backend-tawny-one-62.vercel.app/api/products/tilestypes')
       .then(res => res.json())
       .then(data => {
-        const tiles = Array.isArray(data) ? data : (data.records ? data.records.map(item => item.name) : []);
+        const tiles = Array.isArray(data) ? data : [];
         setTileTypes(tiles);
       })
-      .catch(err => console.error('❌ Tile types fetch error:', err));
+      .catch(() => {});
   }, []);
 
   const handleFileSelect = (e) => {
-  const picked = Array.from(e.target.files || []);
-  setFiles((prev) => [...prev, ...picked]);
-};
+    const picked = Array.from(e.target.files || []);
+    setFiles((prev) => [...prev, ...picked]);
+  };
 
-
- const handleDrop = (e) => {
-  e.preventDefault();
-  const dropped = Array.from(e.dataTransfer.files || []);
-  setFiles((prev) => [...prev, ...dropped]);
-};
-
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const dropped = Array.from(e.dataTransfer.files || []);
+    setFiles((prev) => [...prev, ...dropped]);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -413,38 +412,33 @@ const AddProduct = () => {
     setError('');
     const { brand, product_type, description } = formData;
     if (!brand || !product_type || files.length === 0) {
-  setError('❌ brand, product_type and at least one image are required');
-  return;
-}
-
+      setError('❌ brand, product_type and at least one image are required');
+      return;
+    }
     try {
       const form = new FormData();
       form.append('brand', brand);
       form.append('product_type', product_type);
       form.append('description', description);
+      if (formData.model_name) form.append('model_name', formData.model_name);
       files.forEach((f) => form.append('images', f));
-
       if (product_type === 'Tiles') {
-  form.append('tilestype', formData.tilestype);     
-}
-
+        form.append('tilestype', formData.tilestype);
+      }
       const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products', {
         method: 'POST',
         body: form
       });
-
       if (!res.ok) {
         const err = await res.json();
         setError(err.error || '❌ Failed to add product');
         return;
       }
-
       setSuccess('✅ Product added successfully!');
-      setFormData({ brand: '', model_name: '', product_type: '', description: '', tilestype: '' });
+      setFormData({ brand: '', product_type: '', description: '', tilestype: '', model_name: '' });
       setFiles([]);
-      window.dispatchEvent(new Event("product-added"));
+      window.dispatchEvent(new Event('product-added'));
     } catch (err) {
-      console.error(err);
       setError('❌ Network error: ' + err.message);
     }
   };
@@ -478,7 +472,6 @@ const AddProduct = () => {
         }));
         setQuotes(withSerial);
       } catch (err) {
-        console.error('❌ Error fetching quotes:', err);
         setQuotesError('❌ Failed to load quotes: ' + err.message);
       }
     };
@@ -492,15 +485,12 @@ const AddProduct = () => {
         if (!res.ok) throw new Error('Failed to fetch products');
         const productsData = await res.json();
         const filtered = productsData.filter(p =>
-  p.brand &&
-  p.product_type &&
-  ((Array.isArray(p.images) && p.images.length > 0) || p.image_url)
-);
-setProducts(filtered);
-
-      } catch (err) {
-        console.error('Error loading products:', err);
-      }
+          p.brand &&
+          p.product_type &&
+          ((Array.isArray(p.images) && p.images.length > 0) || p.image_url)
+        );
+        setProducts(filtered);
+      } catch (err) {}
     };
     fetchProducts();
     window.addEventListener('product-added', fetchProducts);
@@ -522,38 +512,33 @@ setProducts(filtered);
         });
       }
     } catch (err) {
-      console.error('❌ Network error during deletion:', err);
       setQuotesError('❌ Failed to delete quote: ' + err.message);
     }
   };
 
   const handleDeleteProduct = async (productId) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
     try {
       const res = await fetch(`https://backend-tawny-one-62.vercel.app/api/products/${productId}`, {
         method: 'DELETE',
       });
-      if (res.ok) {
+        if (res.ok) {
         setProducts(prevProducts =>
           prevProducts.filter(product => product.id !== productId)
         );
-      } else {
-        console.error('Failed to delete product');
       }
-    } catch (err) {
-      console.error('Error deleting product:', err);
-    }
+    } catch (err) {}
   };
 
   const filteredProducts = products.filter((product) => {
-  const q = (searchTerm || '').toLowerCase();
-  if (!q) return true;
-  const brand = product.brand?.toLowerCase() || '';
-  const type  = product.product_type?.toLowerCase() || '';
-  const desc  = product.description?.toLowerCase() || '';
-  return brand.includes(q) || type.includes(q) || desc.includes(q);
-});
-
+    const q = (searchTerm || '').toLowerCase();
+    if (!q) return true;
+    const brand = product.brand?.toLowerCase() || '';
+    const type  = product.product_type?.toLowerCase() || '';
+    const desc  = product.description?.toLowerCase() || '';
+    const model = product.model_name?.toLowerCase() || '';
+    return brand.includes(q) || type.includes(q) || desc.includes(q) || model.includes(q);
+  });
 
   return (
     <div>
@@ -624,6 +609,15 @@ setProducts(filtered);
                 required
               />
             )}
+            {productMode !== 'tiles' && (
+              <input
+                type="text"
+                name="model_name"
+                placeholder="Model"
+                value={formData.model_name}
+                onChange={handleChange}
+              />
+            )}
             <textarea
               name="description"
               placeholder="Description"
@@ -637,31 +631,28 @@ setProducts(filtered);
               onDragOver={(e) => e.preventDefault()}
               onClick={() => fileInputRef.current.click()}
             >
-             {files.length ? `${files.length} image(s) selected` : 'Drag & drop image(s) or click to upload'}
-
+              {files.length ? `${files.length} image(s) selected` : 'Drag & drop image(s) or click to upload'}
               <input
-  ref={fileInputRef}
-  type="file"
-  style={{ display: 'none' }}
-  accept="image/*"
-  multiple
-  onChange={handleFileSelect}
-  name="images"
-/>
-{files.length > 0 && (
-  <div className="selected-files-list">
-    {files.map((f, i) => (
-      <div key={i} className="selected-file-item">
-        {f.name}
-        <button type="button" onClick={(e) => { e.stopPropagation(); setFiles(prev => prev.filter((_, idx) => idx !== i)); }}>
-          &times;
-        </button>
-      </div>
-    ))}
-  </div>
-)}
-
-
+                ref={fileInputRef}
+                type="file"
+                style={{ display: 'none' }}
+                accept="image/*"
+                multiple
+                onChange={handleFileSelect}
+                name="images"
+              />
+              {files.length > 0 && (
+                <div className="selected-files-list">
+                  {files.map((f, i) => (
+                    <div key={i} className="selected-file-item">
+                      {f.name}
+                      <button type="button" onClick={(e) => { e.stopPropagation(); setFiles(prev => prev.filter((_, idx) => idx !== i)); }}>
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <button type="submit" className="add-product-submit-btn">Add Product</button>
           </form>
@@ -692,6 +683,7 @@ setProducts(filtered);
                 <th>Image</th>
                 <th>Brand</th>
                 <th>Product Type</th>
+                <th>Model</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -699,17 +691,17 @@ setProducts(filtered);
               {filteredProducts.map(product => (
                 <tr key={product.id}>
                   <img
-  src={
-    (Array.isArray(product.images) && product.images[0]) ||
-    product.image_url ||
-    ''
-  }
-  alt={product.brand || 'Product'}
-  className="product-table-thumbnail"
-/>
-
+                    src={
+                      (Array.isArray(product.images) && product.images[0]) ||
+                      product.image_url ||
+                      ''
+                    }
+                    alt={product.brand || 'Product'}
+                    className="product-table-thumbnail"
+                  />
                   <td>{product.brand}</td>
                   <td>{product.product_type}</td>
+                  <td>{product.model_name || ''}</td>
                   <td>
                     <button className="product-table-delete-btn" onClick={() => handleDeleteProduct(product.id)}>Delete</button>
                   </td>
@@ -717,7 +709,7 @@ setProducts(filtered);
               ))}
               {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan="4">No products match your search.</td>
+                  <td colSpan="5">No products match your search.</td>
                 </tr>
               )}
             </tbody>
