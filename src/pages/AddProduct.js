@@ -386,13 +386,22 @@ const AddProduct = () => {
   };
 
   useEffect(() => {
-    fetch('https://backend-tawny-one-62.vercel.app/api/products/tilestypes')
-      .then(res => res.json())
-      .then(data => {
-        const tiles = Array.isArray(data) ? data : [];
-        setTileTypes(tiles);
-      })
-      .catch(() => {});
+    const loadTiles = async () => {
+      try {
+        const r1 = await fetch('https://backend-tawny-one-62.vercel.app/api/products/tilestypes');
+        const d1 = await r1.json();
+        let tiles = Array.isArray(d1) ? d1 : (Array.isArray(d1.records) ? d1.records.map(x => x.name || x.tilestype).filter(Boolean) : []);
+        if (!tiles.length) {
+          const r2 = await fetch('https://backend-tawny-one-62.vercel.app/api/tilestype');
+          const d2 = await r2.json();
+          tiles = Array.isArray(d2) ? d2 : (Array.isArray(d2.records) ? d2.records.map(x => x.name || x.tilestype).filter(Boolean) : []);
+        }
+        setTileTypes([...new Set(tiles)]);
+      } catch (e) {
+        setTileTypes([]);
+      }
+    };
+    loadTiles();
   }, []);
 
   const handleFileSelect = (e) => {
@@ -522,7 +531,7 @@ const AddProduct = () => {
       const res = await fetch(`https://backend-tawny-one-62.vercel.app/api/products/${productId}`, {
         method: 'DELETE',
       });
-        if (res.ok) {
+      if (res.ok) {
         setProducts(prevProducts =>
           prevProducts.filter(product => product.id !== productId)
         );
