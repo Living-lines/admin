@@ -355,7 +355,7 @@ export default AddProduct;  */
 
 
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './AddProduct.css';
 import AdminNavbar from './AdminNavbar';
 
@@ -377,6 +377,7 @@ const AddProduct = () => {
   const fileInputRef = useRef();
   const [productMode, setProductMode] = useState('other');
   const [tileTypes, setTileTypes] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -415,8 +416,23 @@ const AddProduct = () => {
     setFiles((prev) => [...prev, ...dropped]);
   };
 
+  const fetchProducts = useCallback(async () => {
+    try {
+      const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products');
+      if (!res.ok) throw new Error('Failed to fetch products');
+      const productsData = await res.json();
+      const filtered = productsData.filter(p =>
+        p.brand &&
+        p.product_type &&
+        ((Array.isArray(p.images) && p.images.length > 0) || p.image_url)
+      );
+      setProducts(filtered);
+    } catch {}
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setSuccess('');
     setError('');
     const { brand, product_type, description } = formData;
@@ -424,6 +440,7 @@ const AddProduct = () => {
       setError('❌ brand, product_type and at least one image are required');
       return;
     }
+    setIsSubmitting(true);
     try {
       const form = new FormData();
       form.append('brand', brand);
@@ -431,7 +448,7 @@ const AddProduct = () => {
       form.append('description', description);
       if (formData.model_name) form.append('model_name', formData.model_name);
       files.forEach((f) => form.append('images', f));
-      if (product_type === 'Tiles') {
+      if (product_mode_is_tiles(productMode, product_type)) {
         form.append('tilestype', formData.tilestype);
       }
       const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products', {
@@ -439,18 +456,27 @@ const AddProduct = () => {
         body: form
       });
       if (!res.ok) {
-        const err = await res.json();
+        const err = await res.json().catch(() => ({}));
         setError(err.error || '❌ Failed to add product');
+        setIsSubmitting(false);
         return;
       }
+      const created = await res.json();
       setSuccess('✅ Product added successfully!');
       setFormData({ brand: '', product_type: '', description: '', tilestype: '', model_name: '' });
       setFiles([]);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      setProducts(prev => [created, ...prev]);
       window.dispatchEvent(new Event('product-added'));
+      await fetchProducts();
     } catch (err) {
       setError('❌ Network error: ' + err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  const product_mode_is_tiles = (mode, type) => mode === 'tiles' || type === 'Tiles';
 
   useEffect(() => {
     const fetchQuotes = async () => {
@@ -488,23 +514,11 @@ const AddProduct = () => {
   }, []);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch('https://backend-tawny-one-62.vercel.app/api/products');
-        if (!res.ok) throw new Error('Failed to fetch products');
-        const productsData = await res.json();
-        const filtered = productsData.filter(p =>
-          p.brand &&
-          p.product_type &&
-          ((Array.isArray(p.images) && p.images.length > 0) || p.image_url)
-        );
-        setProducts(filtered);
-      } catch (err) {}
-    };
     fetchProducts();
-    window.addEventListener('product-added', fetchProducts);
-    return () => window.removeEventListener('product-added', fetchProducts);
-  }, []);
+    const h = () => fetchProducts();
+    window.addEventListener('product-added', h);
+    return () => window.removeEventListener('product-added', h);
+  }, [fetchProducts]);
 
   const handleDelete = async (quoteId) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this quote request?');
@@ -536,7 +550,7 @@ const AddProduct = () => {
           prevProducts.filter(product => product.id !== productId)
         );
       }
-    } catch (err) {}
+    } catch {}
   };
 
   const filteredProducts = products.filter((product) => {
@@ -663,7 +677,9 @@ const AddProduct = () => {
                 </div>
               )}
             </div>
-            <button type="submit" className="add-product-submit-btn">Add Product</button>
+            <button type="submit" className="add-product-submit-btn" disabled={isSubmitting}>
+              {isSubmitting ? 'Adding…' : 'Add Product'}
+            </button>
           </form>
         </div>
 
