@@ -372,8 +372,6 @@ const AddProduct = () => {
   const [files, setFiles] = useState([]);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
-  const [quotes, setQuotes] = useState([]);
-  const [quotesError, setQuotesError] = useState('');
   const [products, setProducts] = useState([]);
   const fileInputRef = useRef();
   const [productMode, setProductMode] = useState('other');
@@ -399,7 +397,7 @@ const AddProduct = () => {
           tiles = Array.isArray(d2) ? d2 : (Array.isArray(d2.records) ? d2.records.map(x => x.name || x.tilestype).filter(Boolean) : []);
         }
         setTileTypes([...new Set(tiles)]);
-      } catch (e) {
+      } catch {
         setTileTypes([]);
       }
     };
@@ -481,65 +479,11 @@ const AddProduct = () => {
   const product_mode_is_tiles = (mode, type) => mode === 'tiles' || type === 'Tiles';
 
   useEffect(() => {
-    const fetchQuotes = async () => {
-      try {
-        const res = await fetch('https://backend-tawny-one-62.vercel.app/api/quotes');
-        if (!res.ok) {
-          const err = await res.json();
-          setQuotesError('❌ Failed to fetch quote requests: ' + (err.error || 'Unknown error'));
-          return;
-        }
-        const quotesData = await res.json();
-        const filtered = quotesData.filter(q =>
-          q.name && q.email && q.phone && q.product_name && q.image_url
-        );
-        const formatted = filtered.map(q => ({
-          name: q.name,
-          phone: q.phone,
-          email: q.email,
-          brand: q.product_brand,
-          model: q.product_name,
-          product_type: q.product_type,
-          image: q.image_url,
-          recordId: q.id
-        })).reverse();
-        const withSerial = formatted.map((q, index) => ({
-          ...q,
-          serial: formatted.length - index
-        }));
-        setQuotes(withSerial);
-      } catch (err) {
-        setQuotesError('❌ Failed to load quotes: ' + err.message);
-      }
-    };
-    fetchQuotes();
-  }, []);
-
-  useEffect(() => {
     fetchProducts();
     const h = () => fetchProducts();
     window.addEventListener('product-added', h);
     return () => window.removeEventListener('product-added', h);
   }, [fetchProducts]);
-
-  const handleDelete = async (quoteId) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this quote request?');
-    if (!confirmDelete) return;
-    try {
-      const res = await fetch(`https://backend-tawny-one-62.vercel.app/api/quotes/${quoteId}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        setQuotesError('❌ Failed to delete quote: ' + (err.error || 'Unknown error'));
-      } else {
-        setQuotes(prevQuotes => {
-          const updated = prevQuotes.filter(q => q.recordId !== quoteId);
-          return updated.map((q, index) => ({ ...q, serial: index + 1 }));
-        });
-      }
-    } catch (err) {
-      setQuotesError('❌ Failed to delete quote: ' + err.message);
-    }
-  };
 
   const handleDeleteProduct = async (productId) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
@@ -553,7 +497,6 @@ const AddProduct = () => {
         );
       }
     } catch {}
-
   };
 
   const filteredProducts = products.filter((product) => {
@@ -759,6 +702,3 @@ const AddProduct = () => {
 };
 
 export default AddProduct;
-
-
-
