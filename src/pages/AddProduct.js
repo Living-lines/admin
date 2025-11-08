@@ -366,7 +366,8 @@ const AddProduct = () => {
     product_type: '',
     description: '',
     tilestype: '',
-    model_name: ''
+    model_name: '',
+    series: ''
   });
   const [files, setFiles] = useState([]);
   const [success, setSuccess] = useState('');
@@ -447,6 +448,7 @@ const AddProduct = () => {
       form.append('product_type', product_type);
       form.append('description', description);
       if (formData.model_name) form.append('model_name', formData.model_name);
+      if (formData.series) form.append('series', formData.series);
       files.forEach((f) => form.append('images', f));
       if (product_mode_is_tiles(productMode, product_type)) {
         form.append('tilestype', formData.tilestype);
@@ -463,7 +465,7 @@ const AddProduct = () => {
       }
       const created = await res.json();
       setSuccess('✅ Product added successfully!');
-      setFormData({ brand: '', product_type: '', description: '', tilestype: '', model_name: '' });
+      setFormData({ brand: '', product_type: '', description: '', tilestype: '', model_name: '', series: '' });
       setFiles([]);
       if (fileInputRef.current) fileInputRef.current.value = '';
       setProducts(prev => [created, ...prev]);
@@ -551,6 +553,7 @@ const AddProduct = () => {
         );
       }
     } catch {}
+
   };
 
   const filteredProducts = products.filter((product) => {
@@ -560,7 +563,8 @@ const AddProduct = () => {
     const type  = product.product_type?.toLowerCase() || '';
     const desc  = product.description?.toLowerCase() || '';
     const model = product.model_name?.toLowerCase() || '';
-    return brand.includes(q) || type.includes(q) || desc.includes(q) || model.includes(q);
+    const series = product.series?.toLowerCase() || '';
+    return brand.includes(q) || type.includes(q) || desc.includes(q) || model.includes(q) || series.includes(q);
   });
 
   return (
@@ -641,6 +645,13 @@ const AddProduct = () => {
                 onChange={handleChange}
               />
             )}
+            <input
+              type="text"
+              name="series"
+              placeholder="Series (optional)"
+              value={formData.series}
+              onChange={handleChange}
+            />
             <textarea
               name="description"
               placeholder="Description"
@@ -709,6 +720,7 @@ const AddProduct = () => {
                 <th>Brand</th>
                 <th>Product Type</th>
                 <th>Model</th>
+                <th>Series</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -727,6 +739,7 @@ const AddProduct = () => {
                   <td>{product.brand}</td>
                   <td>{product.product_type}</td>
                   <td>{product.model_name || ''}</td>
+                  <td>{product.series || ''}</td>
                   <td>
                     <button className="product-table-delete-btn" onClick={() => handleDeleteProduct(product.id)}>Delete</button>
                   </td>
@@ -734,7 +747,7 @@ const AddProduct = () => {
               ))}
               {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan="5">No products match your search.</td>
+                  <td colSpan="6">No products match your search.</td>
                 </tr>
               )}
             </tbody>
