@@ -25,16 +25,18 @@ function Orders() {
           q.name && q.email && q.phone && q.product_name && q.image_url
         );
 
-        const formatted = filtered.map((q, i) => ({
-          id: i + 1,
-          name: q.name,
-          phone: q.phone,
-          email: q.email,
-          product: q.product_name,
-          model: q.product_brand,
-          product_type: q.product_type,
-          image: q.image_url,
-        })).reverse(); // ⬅️ Newest quotes appear first
+const formatted = filtered.map((q, i) => ({
+  id: i + 1,
+  name: q.name,
+  phone: q.phone,
+  email: q.email,
+  product: q.product_name,
+  model: q.product_brand,
+  product_type: q.product_type,
+  image: q.image_url,                 // 👈 already correct
+  color: q.selected_color || '-',     // 👈 NEW
+})).reverse();
+
 
         setData(formatted);
       } catch (err) {
@@ -69,6 +71,7 @@ function Orders() {
                 <th>Brand</th>
                 <th>Model</th>
                 <th>Product Type</th>
+                <th>Color</th>
                 <th>Image</th>
               </tr>
             </thead>
@@ -83,6 +86,7 @@ function Orders() {
                     <td>{row.model}</td>
                     <td>{row.product}</td>
                     <td>{row.product_type}</td>
+                    <td>{row.color}</td>
                     <td>
                       <img
                         src={row.image}
